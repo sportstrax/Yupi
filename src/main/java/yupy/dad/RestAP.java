@@ -41,26 +41,26 @@ public class RestAP extends AbstractVerticle {
 		
 		router.route("/api/humedad").handler(BodyHandler.create());
 		router.get("/api/humedad").handler(this::getAll_H);
-		router.get("/api/humedad/put/:id_SensorH,:id,:state,:fecha,:value").handler(this::putOne_H);
+		router.put("/api/humedad/put/:id_SensorH,:id,:state,:fecha,:value").handler(this::putOne_H);
 		router.get("/api/humedad/:id").handler(this::getOne_H);
 		router.get("/api/humedad/delete/delete").handler(this::deleteAll_H);
 		
 		//TEMPERTURA
 		router.route("/api/temperatura").handler(BodyHandler.create());
 		router.get("/api/temperatura").handler(this::getAll_T);
-		router.get("/api/temperatura/put/:id_SensorT,:id,:state,:fecha,:value").handler(this::putOne_T);
+		router.put("/api/temperatura/put/:id_SensorT,:id,:state,:fecha,:value").handler(this::putOne_T);
 		router.get("/api/temperatura/:id").handler(this::getOne_T);
 		router.get("/api/temperatura/delete/delete").handler(this::deleteAll_T);
 		//ACIDEZ
 		router.route("/api/acidez").handler(BodyHandler.create());
 		router.get("/api/acidez").handler(this::getAll_A);
-		router.get("/api/acidez/put/:id_SensorA,:id,:state,:fecha,:value").handler(this::putOne_A);
+		router.put("/api/acidez/put/:id_SensorA,:id,:state,:fecha,:value").handler(this::putOne_A);
 		router.get("/api/acidez/:id").handler(this::getOne_A);
 		router.get("/api/acidez/delete/delete").handler(this::deleteAll_A);
 		//LUZ
 		router.route("/api/luz").handler(BodyHandler.create());
 		router.get("/api/luz").handler(this::getAll_L);
-		router.get("/api/luz/put/:id_SensorL,:id,:state,:fecha,:value").handler(this::putOne_L);
+		router.put("/api/luz/put/:id_SensorL,:id,:state,:fecha,:value").handler(this::putOne_L);
 		router.get("/api/luz/:id").handler(this::getOne_L);
 		router.get("/api/luz/delete/delete").handler(this::deleteAll_L);
 		
@@ -191,54 +191,41 @@ public class RestAP extends AbstractVerticle {
   }
 	private void putOne_H(RoutingContext routingContext) {
 
-		String paramStr = routingContext.request().getParam("id_SensorH");
-		String paramStr1 = routingContext.request().getParam("id");
-		String paramStr2 = routingContext.request().getParam("state");
-		String paramStr3 = routingContext.request().getParam("fecha");
-		String paramStr4 = routingContext.request().getParam("value");
-	
-		if (paramStr != null) {
-			try {
-				int param = Integer.parseInt(paramStr);
-				int param1 = Integer.parseInt(paramStr1);
-				int param2 = Integer.parseInt(paramStr2);
+		try {
+		
+			
+			mySQLClient.getConnection(conn -> {
+				if (conn.succeeded()) {
+					SQLConnection connection = conn.result();
+					
+					Humedad_State state = Json.decodeValue(routingContext.getBodyAsString(), Humedad_State.class);
+					
+				
+					String query = "INSERT INTO humedad VALUES(?,?,?,?,?)";
+					JsonArray paramQuery = new JsonArray().add(state.getId_SensorH());
+					paramQuery.add(state.getId());
+					paramQuery.add(state.isState());
+					paramQuery.add(state.getFecha());
+					paramQuery.add(state.getValue());
+					connection.updateWithParams(query,paramQuery, res -> {
+						if (res.succeeded()) {
+							routingContext.response().end(Json.encodePrettily("Succefully added"));
 
-				long param3 = Long.parseLong(paramStr3);
+						} else {
+							routingContext.response().setStatusCode(400).end("Error:" + res.cause());
+						}
+					});
+				} else {
+					routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
+				}
 
-				float param4 = Float.parseFloat(paramStr4);
-
-
-				mySQLClient.getConnection(conn -> {
-					if (conn.succeeded()) {
-						SQLConnection connection = conn.result();
-						String query = "INSERT INTO humedad VALUES(?,?,?,?,?)";
-						JsonArray paramQuery = new JsonArray().add(param);
-						paramQuery.add(param1);
-						paramQuery.add(param2);
-						paramQuery.add(param3);
-						paramQuery.add(param4);
-						connection.queryWithParams(query, paramQuery, res -> {
-							if (res.succeeded()) {
-								routingContext.response().end(Json.encodePrettily("Succefully added"));
-
-							} else {
-								routingContext.response().setStatusCode(400).end("Error:" + res.cause());
-							}
-						});
-					} else {
-						routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
-					}
-
-				});
-				// routingContext.response().setStatusCode(200).
-				// end(Json.encodePrettily(database.get(param)));
-			} catch (ClassCastException e) {
-				routingContext.response().setStatusCode(400).end();
-			}
-		} else {
+			});
+			// routingContext.response().setStatusCode(200).
+			// end(Json.encodePrettily(database.get(param)));
+		} catch (ClassCastException e) {
 			routingContext.response().setStatusCode(400).end();
 		}
-
+	
 	}
 	
 	
@@ -373,11 +360,11 @@ public class RestAP extends AbstractVerticle {
 					if (conn.succeeded()) {
 						SQLConnection connection = conn.result();
 						
-						Humedad_State state = Json.decodeValue(routingContext.getBodyAsString(), Humedad_State.class);
+						Temperatura_State state = Json.decodeValue(routingContext.getBodyAsString(), Temperatura_State.class);
 						
 					
 						String query = "INSERT INTO temperatura VALUES(?,?,?,?,?)";
-						JsonArray paramQuery = new JsonArray().add(state.getId_SensorH());
+						JsonArray paramQuery = new JsonArray().add(state.getId_SensorT());
 						paramQuery.add(state.getId());
 						paramQuery.add(state.isState());
 						paramQuery.add(state.getFecha());
@@ -524,53 +511,41 @@ private void getAll_A(RoutingContext routingContext) {
 	
 	private void putOne_A(RoutingContext routingContext) {
 
-		String paramStr = routingContext.request().getParam("id_SensorA");
-		String paramStr1 = routingContext.request().getParam("id");
-		String paramStr2 = routingContext.request().getParam("state");
-		String paramStr3 = routingContext.request().getParam("fecha");
-		String paramStr4 = routingContext.request().getParam("value");
-		if (paramStr != null) {
-			try {
-				int param = Integer.parseInt(paramStr);
-				int param1 = Integer.parseInt(paramStr1);
-				int param2 = Integer.parseInt(paramStr2);
 
-				long param3 = Long.parseLong(paramStr3);
+		try {
+		
+			
+			mySQLClient.getConnection(conn -> {
+				if (conn.succeeded()) {
+					SQLConnection connection = conn.result();
+					
+					Acidez_State state = Json.decodeValue(routingContext.getBodyAsString(), Acidez_State.class);
+					
+				
+					String query = "INSERT INTO temperatura VALUES(?,?,?,?,?)";
+					JsonArray paramQuery = new JsonArray().add(state.getId_SensorA());
+					paramQuery.add(state.getId());
+					paramQuery.add(state.isState());
+					paramQuery.add(state.getFecha());
+					paramQuery.add(state.getValue());
+					connection.updateWithParams(query,paramQuery, res -> {
+						if (res.succeeded()) {
+							routingContext.response().end(Json.encodePrettily("Succefully added"));
 
-				float param4 = Float.parseFloat(paramStr4);
+						} else {
+							routingContext.response().setStatusCode(400).end("Error:" + res.cause());
+						}
+					});
+				} else {
+					routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
+				}
 
-
-				mySQLClient.getConnection(conn -> {
-					if (conn.succeeded()) {
-						SQLConnection connection = conn.result();
-						String query = "INSERT INTO acidez VALUES(?,?,?,?,?)";
-						JsonArray paramQuery = new JsonArray().add(param);
-						paramQuery.add(param1);
-						paramQuery.add(param2);
-						paramQuery.add(param3);
-						paramQuery.add(param4);
-						connection.queryWithParams(query, paramQuery, res -> {
-							if (res.succeeded()) {
-								routingContext.response().end(Json.encodePrettily("Succefully added"));
-
-							} else {
-								routingContext.response().setStatusCode(400).end("Error:" + res.cause());
-							}
-						});
-					} else {
-						routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
-					}
-
-				});
-				// routingContext.response().setStatusCode(200).
-				// end(Json.encodePrettily(database.get(param)));
-			} catch (ClassCastException e) {
-				routingContext.response().setStatusCode(400).end();
-			}
-		} else {
+			});
+			// routingContext.response().setStatusCode(200).
+			// end(Json.encodePrettily(database.get(param)));
+		} catch (ClassCastException e) {
 			routingContext.response().setStatusCode(400).end();
 		}
-
 	}
 	//METODOS LUZ
 	
@@ -694,53 +669,41 @@ private void getAll_A(RoutingContext routingContext) {
 		
 		private void putOne_L(RoutingContext routingContext) {
 
-			String paramStr = routingContext.request().getParam("id_SensorL");
-			String paramStr1 = routingContext.request().getParam("id");
-			String paramStr2 = routingContext.request().getParam("state");
-			String paramStr3 = routingContext.request().getParam("fecha");
-			String paramStr4 = routingContext.request().getParam("value");
-			if (paramStr != null) {
-				try {
-					int param = Integer.parseInt(paramStr);
-					int param1 = Integer.parseInt(paramStr1);
-					int param2 = Integer.parseInt(paramStr2);
 
-					long param3 = Long.parseLong(paramStr3);
+			try {
+			
+				
+				mySQLClient.getConnection(conn -> {
+					if (conn.succeeded()) {
+						SQLConnection connection = conn.result();
+						
+						Luz_State state = Json.decodeValue(routingContext.getBodyAsString(), Luz_State.class);
+						
+					
+						String query = "INSERT INTO luz VALUES(?,?,?,?,?)";
+						JsonArray paramQuery = new JsonArray().add(state.getId_SensorL());
+						paramQuery.add(state.getId());
+						paramQuery.add(state.isState());
+						paramQuery.add(state.getFecha());
+						paramQuery.add(state.getValue());
+						connection.updateWithParams(query,paramQuery, res -> {
+							if (res.succeeded()) {
+								routingContext.response().end(Json.encodePrettily("Succefully added"));
 
-					float param4 = Float.parseFloat(paramStr4);
+							} else {
+								routingContext.response().setStatusCode(400).end("Error:" + res.cause());
+							}
+						});
+					} else {
+						routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
+					}
 
-
-					mySQLClient.getConnection(conn -> {
-						if (conn.succeeded()) {
-							SQLConnection connection = conn.result();
-							String query = "INSERT INTO luz VALUES(?,?,?,?,?)";
-							JsonArray paramQuery = new JsonArray().add(param);
-							paramQuery.add(param1);
-							paramQuery.add(param2);
-							paramQuery.add(param3);
-							paramQuery.add(param4);
-							connection.queryWithParams(query, paramQuery, res -> {
-								if (res.succeeded()) {
-									routingContext.response().end(Json.encodePrettily("Succefully added"));
-
-								} else {
-									routingContext.response().setStatusCode(400).end("Error:" + res.cause());
-								}
-							});
-						} else {
-							routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
-						}
-
-					});
-					// routingContext.response().setStatusCode(200).
-					// end(Json.encodePrettily(database.get(param)));
-				} catch (ClassCastException e) {
-					routingContext.response().setStatusCode(400).end();
-				}
-			} else {
+				});
+				// routingContext.response().setStatusCode(200).
+				// end(Json.encodePrettily(database.get(param)));
+			} catch (ClassCastException e) {
 				routingContext.response().setStatusCode(400).end();
 			}
-
 		}
 }
 
