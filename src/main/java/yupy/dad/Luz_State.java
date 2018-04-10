@@ -1,28 +1,34 @@
 package yupy.dad;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Luz_State {
 	
 	private int id_SensorL;
-	private boolean state;
+	private int state;
 	private float value;
 	private long fecha;
 	private int id;
 	
 	
 	
-	public Luz_State(int id_SensorL,int id, boolean state, long fecha, float value) {
-		super();
-		this.id_SensorL = id_SensorL;
-		this.id = id;
-		this.state = state;
-		this.fecha = fecha;
-		this.value = value;
-	}
+	@JsonCreator 
+	
+	public Luz_State(@JsonProperty("is_SensorL") int id_SensorL ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")long fecha, @JsonProperty("value")float value
+	  ) {
+	  super();
+	  this.id_SensorL = id_SensorL;
+	  this.id=id;
+	  this.state = state;
+	  this.value = value;
+	  this.fecha=fecha;
+	 }
 
 
 
 	public Luz_State() {
-		this(0,0,false,0,0f);
+		this(0,0,0,0,0f);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -40,13 +46,13 @@ public class Luz_State {
 
 
 
-	public boolean isState() {
+	public int isState() {
 		return state;
 	}
 
 
 
-	public void setState(boolean state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 
@@ -95,7 +101,7 @@ public class Luz_State {
 		result = prime * result + (int) (fecha ^ (fecha >>> 32));
 		result = prime * result + id;
 		result = prime * result + id_SensorL;
-		result = prime * result + (state ? 1231 : 1237);
+		result = prime * result + state;
 		result = prime * result + Float.floatToIntBits(value);
 		return result;
 	}

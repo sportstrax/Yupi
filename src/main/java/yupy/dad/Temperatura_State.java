@@ -1,29 +1,34 @@
 
 package yupy.dad;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Temperatura_State {
 	
 	private int id_SensorT;
-	private boolean state;
+	private int state;
 	private float value;
 	private long fecha;
 	private int id;
 	
 	
 	
-	public Temperatura_State(int id_SensorT,int id, boolean state, long fecha, float value) {
-		super();
-		this.id_SensorT = id_SensorT;
-		this.id = id;
-		this.state = state;
-		this.fecha = fecha;
-		this.value = value;
-	}
-
+	@JsonCreator 
+	
+	public Temperatura_State(@JsonProperty("is_SensorT") int id_SensorT ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")long fecha, @JsonProperty("value")float value
+	  ) {
+	  super();
+	  this.id_SensorT = id_SensorT;
+	  this.id=id;
+	  this.state = state;
+	  this.value = value;
+	  this.fecha=fecha;
+	 }
 
 
 	public Temperatura_State() {
-		this(0,0,false,0,0f);
+		this(0,0,0,0,0f);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -41,13 +46,13 @@ public class Temperatura_State {
 
 
 
-	public boolean isState() {
+	public int isState() {
 		return state;
 	}
 
 
 
-	public void setState(boolean state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 
@@ -96,7 +101,7 @@ public class Temperatura_State {
 		result = prime * result + (int) (fecha ^ (fecha >>> 32));
 		result = prime * result + id;
 		result = prime * result + id_SensorT;
-		result = prime * result + (state ? 1231 : 1237);
+		result = prime * result + state;
 		result = prime * result + Float.floatToIntBits(value);
 		return result;
 	}

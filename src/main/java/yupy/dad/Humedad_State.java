@@ -1,26 +1,30 @@
 package yupy.dad;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 public class Humedad_State {
 	
 	private int id_SensorH;
 	private int id;
-	private boolean state;
+	private int state;
 	private float value;
 	private long fecha;
 	
 	
 	
 	
-public Humedad_State(int id_SensorH,int id,boolean state  ,long fecha,  float value) {
-		super();
-		this.id_SensorH = id_SensorH;
-		this.id=id;
-		this.state = state;
-		this.value = value;
-		this.fecha=fecha;
-	}
+	@JsonCreator 
+	
+	public Humedad_State(@JsonProperty("is_SensorH") int id_SensorH ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")long fecha, @JsonProperty("value")float value
+	  ) {
+	  super();
+	  this.id_SensorH = id_SensorH;
+	  this.id=id;
+	  this.state = state;
+	  this.value = value;
+	  this.fecha=fecha;
+	 }
 public Humedad_State() {
-		this(0,0,false,0,0f);
+		this(0,0,0,0,0f);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -30,10 +34,10 @@ public int getId_SensorH() {
 public void setId_SensorH(int id_Sensor_H) {
 	this.id_SensorH = id_Sensor_H;
 }
-public boolean isState() {
+public int isState() {
 	return state;
 }
-public void setState(boolean state) {
+public void setState(int state) {
 	this.state = state;
 }
 public float getValue() {
@@ -61,7 +65,7 @@ public int hashCode() {
 	result = prime * result + (int) (fecha ^ (fecha >>> 32));
 	result = prime * result + id;
 	result = prime * result + id_SensorH;
-	result = prime * result + (state ? 1231 : 1237);
+	result = prime * result + state ;
 	result = prime * result + Float.floatToIntBits(value);
 	return result;
 }

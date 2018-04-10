@@ -1,28 +1,33 @@
 package yupy.dad;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Acidez_State {
 	
 	private int id_SensorA;
-	private boolean state;
+	private int state;
 	private float value;
 	private long fecha;
 	private int id;
 	
 	
 	
-	public Acidez_State(int id_SensorA,int id, boolean state, long fecha, float value) {
-		super();
-		this.id_SensorA = id_SensorA;
-		this.id = id;
-		this.state = state;
-		this.fecha = fecha;
-		this.value = value;
-	}
-
+@JsonCreator 
+	
+	public Acidez_State(@JsonProperty("is_SensorA") int id_SensorA ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")long fecha, @JsonProperty("value")float value
+	  ) {
+	  super();
+	  this.id_SensorA = id_SensorA;
+	  this.id=id;
+	  this.state = state;
+	  this.value = value;
+	  this.fecha=fecha;
+	 }
 
 
 	public Acidez_State() {
-		this(0,0,false,0,0f);
+		this(0,0,0,0,0f);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -40,13 +45,13 @@ public class Acidez_State {
 
 
 
-	public boolean isState() {
+	public int isState() {
 		return state;
 	}
 
 
 
-	public void setState(boolean state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 
@@ -95,7 +100,7 @@ public class Acidez_State {
 		result = prime * result + (int) (fecha ^ (fecha >>> 32));
 		result = prime * result + id;
 		result = prime * result + id_SensorA;
-		result = prime * result + (state ? 1231 : 1237);
+		result = prime * result + state ;
 		result = prime * result + Float.floatToIntBits(value);
 		return result;
 	}
