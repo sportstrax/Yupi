@@ -8,14 +8,14 @@ public class Acidez_State {
 	private int id_SensorA;
 	private int state;
 	private float value;
-	private long fecha;
+	private String fecha;
 	private int id;
 	
 	
 	
 @JsonCreator 
 	
-	public Acidez_State(@JsonProperty("is_SensorA") int id_SensorA ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")long fecha, @JsonProperty("value")float value
+	public Acidez_State(@JsonProperty("id_SensorA") int id_SensorA ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")String fecha, @JsonProperty("value")float value
 	  ) {
 	  super();
 	  this.id_SensorA = id_SensorA;
@@ -27,7 +27,7 @@ public class Acidez_State {
 
 
 	public Acidez_State() {
-		this(0,0,0,0,0f);
+		this(0,0,0,"0",0f);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -69,13 +69,13 @@ public class Acidez_State {
 
 
 
-	public long getFecha() {
+	public String getFecha() {
 		return fecha;
 	}
 
 
 
-	public void setFecha(long fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 
@@ -93,18 +93,20 @@ public class Acidez_State {
 
 
 
+
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (fecha ^ (fecha >>> 32));
+		result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
 		result = prime * result + id;
 		result = prime * result + id_SensorA;
-		result = prime * result + state ;
+		result = prime * result + state;
 		result = prime * result + Float.floatToIntBits(value);
 		return result;
 	}
-
 
 
 	@Override
@@ -116,7 +118,10 @@ public class Acidez_State {
 		if (getClass() != obj.getClass())
 			return false;
 		Acidez_State other = (Acidez_State) obj;
-		if (fecha != other.fecha)
+		if (fecha == null) {
+			if (other.fecha != null)
+				return false;
+		} else if (!fecha.equals(other.fecha))
 			return false;
 		if (id != other.id)
 			return false;

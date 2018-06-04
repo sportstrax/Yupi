@@ -7,14 +7,14 @@ public class Humedad_State {
 	private int id;
 	private int state;
 	private float value;
-	private long fecha;
+	private String fecha;
 	
 	
 	
 	
 	@JsonCreator 
 	
-	public Humedad_State(@JsonProperty("is_SensorH") int id_SensorH ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")long fecha, @JsonProperty("value")float value
+	public Humedad_State(@JsonProperty("id_SensorH") int id_SensorH ,@JsonProperty("id")int id, @JsonProperty("state")int state, @JsonProperty("fecha")String fecha, @JsonProperty("value")float value
 	  ) {
 	  super();
 	  this.id_SensorH = id_SensorH;
@@ -24,7 +24,7 @@ public class Humedad_State {
 	  this.fecha=fecha;
 	 }
 public Humedad_State() {
-		this(0,0,0,0,0f);
+		this(0,0,0,"0",0f);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -46,10 +46,10 @@ public float getValue() {
 public void setValue(float value) {
 	this.value = value;
 }
-public long getFecha() {
+public String getFecha() {
 	return fecha;
 }
-public void setFecha(long fecha) {
+public void setFecha(String fecha) {
 	this.fecha = fecha;
 }
 public int getId() {
@@ -58,14 +58,15 @@ public int getId() {
 public void setId(int id) {
 	this.id = id;
 }
+
 @Override
 public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + (int) (fecha ^ (fecha >>> 32));
+	result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
 	result = prime * result + id;
 	result = prime * result + id_SensorH;
-	result = prime * result + state ;
+	result = prime * result + state;
 	result = prime * result + Float.floatToIntBits(value);
 	return result;
 }
@@ -78,7 +79,10 @@ public boolean equals(Object obj) {
 	if (getClass() != obj.getClass())
 		return false;
 	Humedad_State other = (Humedad_State) obj;
-	if (fecha != other.fecha)
+	if (fecha == null) {
+		if (other.fecha != null)
+			return false;
+	} else if (!fecha.equals(other.fecha))
 		return false;
 	if (id != other.id)
 		return false;
