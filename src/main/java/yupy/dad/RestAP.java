@@ -651,37 +651,40 @@ public class RestAP extends AbstractVerticle {
 
 	}
 
+
 	private void getLasts_H(RoutingContext routingContext) {
 
-		try {
+		  try {
 
-			mySQLClient.getConnection(conn -> {
-				if (conn.succeeded()) {
-					SQLConnection connection = conn.result();
-					String query = "SELECT id_SensorH , fecha , state , value"
-							+ " FROM humedad GROUP BY id_SensorH ORDER BY id_SensorH ASC";
+		   mySQLClient.getConnection(conn -> {
+		    if (conn.succeeded()) {
+		     SQLConnection connection = conn.result();
+		     String query ="SELECT id_SensorH, fecha, state,value FROM humedad WHERE id IN ("
+		      +"   SELECT MAX(id) FROM humedad  GROUP BY id_SensorH);";
+		      //"SELECT id_SensorH , MAX(fecha),fecha , state , value"
+		      // + " FROM humedad GROUP BY id_SensorH ASC";
+		     connection.query(query, res -> {
+		      if (res.succeeded()) {
+		       routingContext.response().end(Json.encode(res.result().getRows()));
 
-					connection.query(query, res -> {
-						if (res.succeeded()) {
-							routingContext.response().end(Json.encode(res.result().getRows()));
+		      } else {
+		       routingContext.response().setStatusCode(400).end("Error:" + res.cause());
+		      }
+		      connection.close();
+		     });
+		    } else {
+		     routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
+		    }
 
-						} else {
-							routingContext.response().setStatusCode(400).end("Error:" + res.cause());
-						}
-						connection.close();
-					});
-				} else {
-					routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
-				}
+		   });
+		   // routingContext.response().setStatusCode(200).
+		   // end(Json.encodePrettily(database.get(param)));
+		  } catch (ClassCastException e) {
+		   routingContext.response().setStatusCode(400).end();
+		  }
 
-			});
-			// routingContext.response().setStatusCode(200).
-			// end(Json.encodePrettily(database.get(param)));
-		} catch (ClassCastException e) {
-			routingContext.response().setStatusCode(400).end();
-		}
-
-	}
+		 }
+	
 	// METODOS TEMPERATURA
 
 	private void getAll_T(RoutingContext routingContext) {
@@ -788,34 +791,35 @@ public class RestAP extends AbstractVerticle {
 
 	private void getLasts_T(RoutingContext routingContext) {
 
-		try {
+		  try {
 
-			mySQLClient.getConnection(conn -> {
-				if (conn.succeeded()) {
-					SQLConnection connection = conn.result();
-					String query = "SELECT id_SensorT , fecha , state , value"
-							+ " FROM temperatura GROUP BY id_SensorT ORDER BY id_SensorT ASC";
+		   mySQLClient.getConnection(conn -> {
+		    if (conn.succeeded()) {
+		     SQLConnection connection = conn.result();
+		     String query ="SELECT id_SensorT, fecha, state,value FROM temperatura WHERE id IN ("
+		        +"   SELECT MAX(id) FROM temperatura  GROUP BY id_SensorT);";
 
-					connection.query(query, res -> {
-						if (res.succeeded()) {
-							routingContext.response().end(Json.encode(res.result().getRows()));
+		     connection.query(query, res -> {
+		      if (res.succeeded()) {
+		       routingContext.response().end(Json.encode(res.result().getRows()));
 
-						} else {
-							routingContext.response().setStatusCode(400).end("Error:" + res.cause());
-						}
-						connection.close();
-					});
-				} else {
-					routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
-				}
+		      } else {
+		       routingContext.response().setStatusCode(400).end("Error:" + res.cause());
+		      }
+		      connection.close();
+		     });
+		    } else {
+		     routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
+		    }
 
-			});
-			
-		} catch (ClassCastException e) {
-			routingContext.response().setStatusCode(400).end();
-		}
+		   });
+		   // routingContext.response().setStatusCode(200).
+		   // end(Json.encodePrettily(database.get(param)));
+		  } catch (ClassCastException e) {
+		   routingContext.response().setStatusCode(400).end();
+		  }
 
-	}
+		 }
 
 	private void deleteAll_T(RoutingContext routingContext) {
 		try {
@@ -1223,35 +1227,35 @@ public class RestAP extends AbstractVerticle {
 
 	private void getLasts_L(RoutingContext routingContext) {
 
-		try {
+		  try {
 
-			mySQLClient.getConnection(conn -> {
-				if (conn.succeeded()) {
-					SQLConnection connection = conn.result();
-					String query = "SELECT id_SensorL , fecha , state , value"
-							+ " FROM luz GROUP BY id_SensorL ORDER BY id_SensorL ASC";
+		   mySQLClient.getConnection(conn -> {
+		    if (conn.succeeded()) {
+		     SQLConnection connection = conn.result();
+		     String query ="SELECT id_SensorL, fecha, state,value FROM luz WHERE id IN ("
+		        +"   SELECT MAX(id) FROM luz  GROUP BY id_SensorL);";
 
-					connection.query(query, res -> {
-						if (res.succeeded()) {
-							routingContext.response().end(Json.encode(res.result().getRows()));
+		     connection.query(query, res -> {
+		      if (res.succeeded()) {
+		       routingContext.response().end(Json.encode(res.result().getRows()));
 
-						} else {
-							routingContext.response().setStatusCode(400).end("Error:" + res.cause());
-						}
-						connection.close();
-					});
-				} else {
-					routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
-				}
+		      } else {
+		       routingContext.response().setStatusCode(400).end("Error:" + res.cause());
+		      }
+		      connection.close();
+		     });
+		    } else {
+		     routingContext.response().setStatusCode(400).end("Error:" + conn.cause());
+		    }
 
-			});
-			
-		} catch (ClassCastException e) {
-			routingContext.response().setStatusCode(400).end();
-		}
+		   });
+		   // routingContext.response().setStatusCode(200).
+		   // end(Json.encodePrettily(database.get(param)));
+		  } catch (ClassCastException e) {
+		   routingContext.response().setStatusCode(400).end();
+		  }
 
-	}
-
+		 }
 	private void deleteAll_L(RoutingContext routingContext) {
 		try {
 
